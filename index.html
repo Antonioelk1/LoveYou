@@ -2,8 +2,8 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-select=none" />
-  <title>I Love You Forever</title>
+  <title>Love Forever</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <style>
     /* --- Base page --- */
     body {
@@ -11,84 +11,98 @@
       height: 100vh;
       margin: 0;
       overflow: hidden;
-      font-family: system-ui, -apple-system, sans-serif;
-      display: flex;
-      justify-content: center;
-      align-items: center;
+      font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
     }
 
-    /* --- حاوية الـ SVG المتجاوبة (Container) --- */
-    #heart-container {
-      width: 90vw; /* واخد 90% من عرض الشاشة */
-      max-width: 500px; /* باش ما يكبرش بزاف فالايباد/الحاسوب */
-      height: auto;
-      /* المنظور لـ 3D لـ تأثير العمق */
-      perspective: 1000px;
+    /* --- Love words --- */
+    #ui .love {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      margin: -225px 0 0 -225px;
+      --i: 1;
     }
 
-    svg {
-      width: 100%;
-      height: auto;
-      display: block;
-      /* باش نحافظوا على أبعاد 3D */
-      transform-style: preserve-3d;
-      /* أنيماسيون لقلب كامل كيدور ببطء فـ 3D */
-      animation: heartRotate 30s infinite linear;
+    #ui .love:last-child .love_word {
+      color: #ea80b0;
+      font-size: 1.4rem;
+      text-shadow: 0 0 10px #fff;
     }
 
-    /* --- الحب - تنسيق الكتابة --- */
-    .love_text {
-      font-size: 1.2rem; /* حجم الخط مناسب ومقروء */
-      fill: #ea80b0; /* لون الكتابة (استخدمت fill حيت وسط SVG) */
-      text-shadow: 0 0 8px #ffb6c1;
-      letter-spacing: 1px;
-      dominant-baseline: middle; /* تمركز الكتابة عمودياً */
-      text-anchor: middle;      /* تمركز الكتابة أفقياً */
-      font-weight: bold;
+    #ui .love_word {
+      color: #ea80b0;
+      font-size: 1.4rem;
+      transform: translateY(-100%) rotateZ(-30deg);
+      text-shadow: 0 0 10px #fff;
+      letter-spacing: 2px;
+      white-space: nowrap;
+    }
+    #ui .love_horizontal {
+      animation: horizontal 10000ms infinite alternate ease-in-out;
+      animation-delay: calc(var(--i) * -300ms);
+    }
+    #ui .love_vertical {
+      animation: vertical 20000ms infinite linear;
+      animation-delay: calc(var(--i) * -300ms);
     }
 
-    /* --- أنيماسيون الدوران ببطء في 3D للقلب كامل --- */
-    @keyframes heartRotate {
-      0%   { transform: rotateY(0deg) rotateX(0deg); }
-      50%  { transform: rotateY(180deg) rotateX(5deg); }
-      100% { transform: rotateY(360deg) rotateX(0deg); }
+    /* --- Animations --- */
+    @keyframes horizontal {
+      from { transform: translateX(0px); }
+      to   { transform: translateX(450px); }
+    }
+    @keyframes vertical {
+      0%   { transform: translateY(180px); }
+      10%  { transform: translateY(45px); }
+      15%  { transform: translateY(4.5px); }
+      18%  { transform: translateY(0px); }
+      20%  { transform: translateY(4.5px); }
+      22%  { transform: translateY(34.61538px); }
+      24%  { transform: translateY(64.28571px); }
+      25%  { transform: translateY(112.5px); }
+      26%  { transform: translateY(64.28571px); }
+      28%  { transform: translateY(34.61538px); }
+      30%  { transform: translateY(4.5px); }
+      32%  { transform: translateY(0px); }
+      35%  { transform: translateY(4.5px); }
+      40%  { transform: translateY(45px); }
+      50%  { transform: translateY(180px); }
+      71%  { transform: translateY(428.57143px); }
+      72.5%{ transform: translateY(441.17647px); }
+      75%  { transform: translateY(450px); }
+      77.5%{ transform: translateY(441.17647px); }
+      79%  { transform: translateY(428.57143px); }
+      100% { transform: translateY(180px); }
     }
   </style>
 </head>
 <body>
 
-  <div id="heart-container">
-    <svg viewBox="0 0 500 400">
-      <path id="heart-path" d="M250,90 C150,0 0,90 0,180 C0,300 150,350 250,400 C350,350 500,300 500,180 C500,90 350,0 250,90 Z" 
-            fill="none" 
-            stroke="none" />
-      </svg>
-  </div>
+  <div id="ui"></div>
 
   <script>
-    const N = 80; // عدد كلمات I love you فـ لقلب
-    const svgNamespace = "http://www.w3.org/2000/svg";
-    const path = document.getElementById("heart-path");
-    const container = document.querySelector("#heart-container svg");
+    const N = 100;     
+    const ui = document.getElementById('ui');
 
-    // حساب طول المسار لقلب
-    const totalLength = path.getTotalLength();
+    for (let i = 1; i <= N; i++) {
+      const love = document.createElement('div');
+      love.className = 'love';
+      love.style.setProperty('--i', i);
 
-    for (let i = 0; i < N; i++) {
-      // حساب الموقع ديال كل كلمة على طول المسار
-      const distance = (totalLength / N) * i;
-      const point = path.getPointAtLength(distance);
+      const h = document.createElement('div');
+      h.className = 'love_horizontal';
 
-      // إنشاء عنصر Text فـ SVG
-      const textNode = document.createElementNS(svgNamespace, "text");
-      textNode.className = 'love_text';
-      textNode.textContent = 'I love you';
+      const v = document.createElement('div');
+      v.className = 'love_vertical';
 
-      // وضع الكتابة فالمركز الصحيح على المسار
-      textNode.setAttribute("x", point.x);
-      textNode.setAttribute("y", point.y);
+      const word = document.createElement('div');
+      word.className = 'love_word';
+      word.textContent = 'I love you';
 
-      container.appendChild(textNode);
+      v.appendChild(word);
+      h.appendChild(v);
+      love.appendChild(h);
+      ui.appendChild(love);
     }
   </script>
 </body>
